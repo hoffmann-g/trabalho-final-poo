@@ -8,7 +8,7 @@ import model.services.RentalService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Program {
+public class Test {
 
     public static void main(String[] args){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");

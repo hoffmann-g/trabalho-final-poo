@@ -1,6 +1,7 @@
 package model.entities;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CarRental {
 
@@ -46,5 +47,10 @@ public class CarRental {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    @Override
+    public String toString() {
+        return vehicle + " - " + start.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 }
