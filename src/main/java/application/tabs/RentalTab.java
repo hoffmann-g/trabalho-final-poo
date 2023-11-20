@@ -109,6 +109,7 @@ public class RentalTab extends Tab<CarRental>{
                 System.out.println("processed");
 
                 invoiceTab.loadInvoice(rental);
+                removeFromList(rental);
 
             }
         });
@@ -145,6 +146,6 @@ public class RentalTab extends Tab<CarRental>{
 
     @Override
     void deleteRow(CarRental carRental) throws IOException {
-        
+
     }
 }
