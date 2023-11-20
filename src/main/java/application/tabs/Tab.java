@@ -89,7 +89,7 @@ public abstract class Tab<T> {
     }
 
     abstract void readRows() throws Exception;
-    abstract void insertRow(String row) throws Exception;
-    abstract void deleteRow(String row) throws Exception;
+    abstract void insertRow(T t) throws Exception;
+    abstract void deleteRow(T t) throws Exception;
 
 }

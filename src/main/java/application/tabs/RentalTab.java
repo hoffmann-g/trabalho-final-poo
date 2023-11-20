@@ -8,9 +8,7 @@ import model.services.RentalService;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,6 +24,12 @@ public class RentalTab extends Tab<CarRental>{
 
     public RentalTab(String name, VehicleTab vehicleTab, InvoiceTab invoiceTab) {
         super(name);
+
+        try {
+            readRows();
+        } catch (IOException e) {
+            throw new RuntimeException("could not read rentals");
+        }
 
         JButton createRental = new JButton("+");
         createRental.addActionListener(e -> {
@@ -76,6 +80,11 @@ public class RentalTab extends Tab<CarRental>{
                     cr1 = new CarRental(LocalDateTime.parse(selectedTime), null, new Vehicle(selectedOption));
                 }
                 insertIntoList(cr1);
+                try {
+                    insertRow(cr1);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 System.out.println("Rental created:");
                 System.out.println(cr1.getStart().toString());
@@ -107,17 +116,35 @@ public class RentalTab extends Tab<CarRental>{
     }
 
     @Override
-    void readRows() {
+    void readRows() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("rentals.csv"));
+        String rental;
+        while((rental = br.readLine()) != null){
+            String[] info = rental.split(",");
+            String plate = info[0];
+            LocalDateTime time = LocalDateTime.parse(info[1]);
 
+            System.out.println(plate);
+            System.out.println(time);
+
+            CarRental cr = new CarRental(time, null, new Vehicle(plate));
+            insertIntoList(cr);
+
+            System.out.println("read: " + cr.getVehicle().getModel() + cr.getStart());
+        }
+        br.close();
     }
 
     @Override
-    void insertRow(String row) {
-
+    void insertRow(CarRental carRental) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter("rentals.csv", true));
+        bw.write(carRental.getVehicle().getModel() + "," + carRental.getStart());
+        bw.flush();
+        bw.close();
     }
 
     @Override
-    void deleteRow(String row) {
-
+    void deleteRow(CarRental carRental) throws IOException {
+        
     }
 }

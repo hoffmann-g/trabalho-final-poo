@@ -23,7 +23,7 @@ public class VehicleTab extends Tab<Vehicle> {
             String plate = JOptionPane.showInputDialog("License plate:").toUpperCase().replaceAll(" ", "-");
             insertIntoList(new Vehicle(plate));
             try {
-                insertRow(plate);
+                insertRow(new Vehicle(plate));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -35,7 +35,7 @@ public class VehicleTab extends Tab<Vehicle> {
             if (getSelectedValue() != null){
                 removeFromList(getSelectedValue());
                 try {
-                    deleteRow(getSelectedValue().getModel());
+                    deleteRow(getSelectedValue());
                 } catch (IOException ex) {
                     throw new RuntimeException("could not delete row in csv");
                 }
@@ -54,12 +54,12 @@ public class VehicleTab extends Tab<Vehicle> {
         br.close();
     }
 
-    public void deleteRow(String row) throws IOException {
+    public void deleteRow(Vehicle vehicle) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("garage.csv"));
         List<String> vehicleList = new ArrayList<>();
         String plate;
         while((plate = br.readLine()) != null){
-            if (!plate.equals(row)){
+            if (!plate.equals(vehicle.getModel().toUpperCase().replaceAll(" ", "-"))){
                 vehicleList.add(plate);
             }
             System.out.println("read: " + plate);
@@ -67,17 +67,17 @@ public class VehicleTab extends Tab<Vehicle> {
         br.close();
 
         BufferedWriter bw = new BufferedWriter(new FileWriter("garage.csv", false));
-        for(String vehicle: vehicleList){
-            bw.write(vehicle);
+        for(String v : vehicleList){
+            bw.write(v);
             bw.newLine();
         }
         bw.flush();
         bw.close();
     }
 
-    public void insertRow(String row) throws IOException {
+    public void insertRow(Vehicle vehicle) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter("garage.csv", true));
-        bw.write(row);
+        bw.write(vehicle.getModel().toUpperCase().replaceAll(" ", "-"));
         bw.flush();
         bw.close();
     }
