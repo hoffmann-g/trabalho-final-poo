@@ -1,4 +1,4 @@
-package application;
+package application.tabs;
 
 import model.entities.CarRental;
 
@@ -76,6 +76,11 @@ public class Tab<T> {
         objList.add(t);
     }
 
+    public void removeFromList(T t){
+        listModel.removeElement(t);
+        objList.remove(t);
+    }
+
     public JPanel getBackgroundPanel() {
         return backgroundPanel;
     }
@@ -84,17 +89,10 @@ public class Tab<T> {
         return objList;
     }
 
-    public JList<T> getjList() {
-        return jList;
-    }
-
     public T getSelectedValue(){
         System.out.println("returned:" + selectedObj);
         return selectedObj;
     }
 
-    public void removeFromList(T t){
-        listModel.removeElement(t);
-        objList.remove(t);
-    }
+
 }

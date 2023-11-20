@@ -1,9 +1,11 @@
-package application;
+package application.tabs;
 
 import model.entities.CarRental;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.format.DateTimeFormatter;
 
 public class InvoiceTab {
@@ -45,10 +47,26 @@ public class InvoiceTab {
 
         details.add(plate, gbc);
         price.add(invoice, gbc2);
+
+        JButton generateCode = new JButton("Generate Code");
+        generateCode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("test");
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                JLabel jLabel = new JLabel(String.valueOf(carRental.getInvoice().totalPayment()));
+                frame.add(jLabel);
+
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+
+        price.add(generateCode);
     }
 
     public void loadInvoice(CarRental carRental){
-
+        this.carRental = carRental;
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String time = carRental.getStart().format(dtf) + " - "  + carRental.getFinish().format(dtf);
@@ -57,14 +75,12 @@ public class InvoiceTab {
         plate.setEditable(false);
         plate.setText(det);
 
-        //details
-
+        //price and whatever
         String inv = "Value: -----\n" + carRental.getInvoice().getBasicPayment() +
                 "\n Tax: -----\n"+ carRental.getInvoice().getTax() +
                 "\n TOTAL: -----\n" + carRental.getInvoice().totalPayment();
         invoice.setEditable(false);
         invoice.setText(inv);
-
     }
 
     public JPanel getBackground() {
