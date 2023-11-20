@@ -12,22 +12,16 @@ public class VehicleTab extends Tab<Vehicle> {
         super(name);
 
         JButton createVehicle = new JButton("+");
-        createVehicle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String plate = JOptionPane.showInputDialog("License plate:");
-                insertIntoList(new Vehicle(plate.toUpperCase().replaceAll(" ", "-")));
-            }
+        createVehicle.addActionListener(e -> {
+            String plate = JOptionPane.showInputDialog("License plate:");
+            insertIntoList(new Vehicle(plate.toUpperCase().replaceAll(" ", "-")));
         });
         addButton(createVehicle);
 
         JButton deleteVehicle = new JButton("-");
-        deleteVehicle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (getSelectedValue() != null){
-                    removeFromList(getSelectedValue());
-                }
+        deleteVehicle.addActionListener(e -> {
+            if (getSelectedValue() != null){
+                removeFromList(getSelectedValue());
             }
         });
         addButton(deleteVehicle);

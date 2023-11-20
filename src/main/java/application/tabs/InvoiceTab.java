@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class InvoiceTab {
@@ -49,20 +51,39 @@ public class InvoiceTab {
         price.add(invoice, gbc2);
 
         JButton generateCode = new JButton("Generate Code");
-        generateCode.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame frame = new JFrame("test");
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                JLabel jLabel = new JLabel(String.valueOf(carRental.getInvoice().totalPayment()));
-                frame.add(jLabel);
+        generateCode.addActionListener(e -> {
+            JFrame frame = new JFrame("test");
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            JLabel jLabel = new JLabel(String.valueOf(carRental.getInvoice().totalPayment()));
+            frame.add(jLabel);
 
-                frame.pack();
-                frame.setVisible(true);
+            frame.pack();
+            frame.setVisible(true);
+        });
+        price.add(generateCode);
+
+        JButton generateFile = new JButton("Export");
+        generateFile.addActionListener(e -> {
+            try {
+                DateTimeFormatter outputformat = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm");
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+                FileWriter fw = new FileWriter(carRental.getVehicle().getModel() + "_" + carRental.getFinish().format(outputformat) + ".txt");
+                fw.write("PLATE: " + carRental.getVehicle().getModel());
+                fw.write("\nstart: " + carRental.getStart().format(dtf));
+                fw.write("\nfinish: " + carRental.getFinish().format(dtf));
+                fw.write("\n");
+                fw.write("\nbasic payment: " + carRental.getInvoice().getBasicPayment().toString());
+                fw.write("\ntax: " + carRental.getInvoice().getTax().toString());
+                fw.write("\ntotal: " + carRental.getInvoice().totalPayment().toString());
+                fw.close();
+
+                System.out.println("file exported");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
-
-        price.add(generateCode);
+        price.add(generateFile);
     }
 
     public void loadInvoice(CarRental carRental){

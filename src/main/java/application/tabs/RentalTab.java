@@ -8,6 +8,9 @@ import model.services.RentalService;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,12 +18,11 @@ import java.util.List;
 
 public class RentalTab extends Tab<CarRental>{
 
-    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     private CarRental rental = null;
 
     private final RentalService rs = new RentalService(10., 130., new BrazilTaxService());
-
 
     public RentalTab(String name, VehicleTab vehicleTab, InvoiceTab invoiceTab) {
         super(name);
@@ -43,21 +45,48 @@ public class RentalTab extends Tab<CarRental>{
                     stringArray,
                     null
             );
+
+            String now = LocalDateTime.now().format(dtf);
+            String selectedTime = (String)JOptionPane.showInputDialog(
+                    null,
+                    "PATTERN: yyyy/MM/dd HH:mm:ss",
+                    "Select start time",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    now
+                    );
+
             if (selectedOption != null) {
-                LocalDateTime start = LocalDateTime.parse("11/11/2023 10:30", dtf);
-                CarRental cr1 = new CarRental(start, null, new Vehicle(selectedOption));
+                CarRental cr1;
+                if (selectedTime.length() < 1){
+                    cr1 = new CarRental(LocalDateTime.now(), null, new Vehicle(selectedOption));
+                }
+                else {
+                    System.out.println("time: " + selectedTime);
+
+                    selectedTime = selectedTime.replaceAll("/", "-");
+
+                    System.out.println("time: " + selectedTime);
+
+                    selectedTime = selectedTime.replaceAll(" ", "T");
+
+                    System.out.println("time: " + selectedTime);
+
+                    cr1 = new CarRental(LocalDateTime.parse(selectedTime), null, new Vehicle(selectedOption));
+                }
                 insertIntoList(cr1);
+
+                System.out.println("Rental created:");
+                System.out.println(cr1.getStart().toString());
             }
         });
         addButton(createRental);
 
         JButton deleteRental = new JButton("-");
-        deleteRental.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (getSelectedValue() != null){
-                    removeFromList(getSelectedValue());
-                }
+        deleteRental.addActionListener(e -> {
+            if (getSelectedValue() != null){
+                removeFromList(getSelectedValue());
             }
         });
         addButton(deleteRental);
