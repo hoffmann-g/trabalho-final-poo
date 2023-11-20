@@ -17,6 +17,7 @@ public class InvoiceTab {
     private JPanel background;
     private JPanel details;
     private JPanel price;
+    private JPanel buttons;
 
     private JTextArea plate = new JTextArea();
     private JTextArea invoice = new JTextArea();
@@ -25,13 +26,16 @@ public class InvoiceTab {
         background = new JPanel();
         details = new JPanel();
         price = new JPanel();
+        buttons = new JPanel();
 
-        background.setLayout(new BoxLayout(background, BoxLayout.X_AXIS));
+        background.setLayout(new GridLayout());
         details.setLayout(new GridBagLayout());
         price.setLayout(new GridBagLayout());
+        buttons.setLayout(new FlowLayout());
 
         background.add(details);
         background.add(price);
+        background.add(buttons);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -60,7 +64,7 @@ public class InvoiceTab {
             frame.pack();
             frame.setVisible(true);
         });
-        price.add(generateCode);
+        buttons.add(generateCode);
 
         JButton generateFile = new JButton("Export");
         generateFile.addActionListener(e -> {
@@ -83,7 +87,7 @@ public class InvoiceTab {
                 throw new RuntimeException(ex);
             }
         });
-        price.add(generateFile);
+        buttons.add(generateFile);
     }
 
     public void loadInvoice(CarRental carRental){

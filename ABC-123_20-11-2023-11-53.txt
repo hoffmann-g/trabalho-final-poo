@@ -1,0 +1,7 @@
+PLATE: ABC-123
+start: 19/11/2023 11:53
+finish: 20/11/2023 11:53
+
+basic payment: 130.0
+tax: 19.5
+total: 149.5

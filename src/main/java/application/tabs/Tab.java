@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tab<T> {
+public abstract class Tab<T> {
 
     private JPanel backgroundPanel;
     private JPanel labelPanel;
@@ -31,13 +31,7 @@ public class Tab<T> {
         backgroundPanel.setLayout(new BoxLayout(backgroundPanel, BoxLayout.Y_AXIS));
 
         Dimension fixedSize = new Dimension(200, 150); // Adjust the size as needed
-        jList.setMaximumSize(fixedSize);
         jList.setMinimumSize(fixedSize);
-        jList.setPreferredSize(fixedSize);
-
-        // Set a fixed cell size to prevent automatic resizing
-        jList.setFixedCellHeight(25); // You can adjust the height as needed
-        jList.setVisibleRowCount(5); // Set the number of visible rows
 
         // label panel
         labelPanel = new JPanel();
@@ -94,5 +88,8 @@ public class Tab<T> {
         return selectedObj;
     }
 
+    abstract void readRows() throws Exception;
+    abstract void insertRow(String row) throws Exception;
+    abstract void deleteRow(String row) throws Exception;
 
 }

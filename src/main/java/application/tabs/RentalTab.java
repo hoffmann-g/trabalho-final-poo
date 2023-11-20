@@ -105,4 +105,19 @@ public class RentalTab extends Tab<CarRental>{
         });
         addButton(finalizeRental);
     }
+
+    @Override
+    void readRows() {
+
+    }
+
+    @Override
+    void insertRow(String row) {
+
+    }
+
+    @Override
+    void deleteRow(String row) {
+
+    }
 }
