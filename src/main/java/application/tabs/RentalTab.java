@@ -7,36 +7,27 @@ import model.services.BrazilTaxService;
 import model.services.RentalService;
 
 import javax.swing.*;
-import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class RentalTab extends Tab<CarRental>{
 
     private VehicleTab vehicleTab;
     private InvoiceTab invoiceTab;
 
-    private String path;
-
     private DataAccessObject<CarRental> dao;
+    private RentalService rs;
 
-    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private CarRental rental;
 
-    private CarRental rental = null;
-
-    private final RentalService rs = new RentalService(10., 130., new BrazilTaxService());
-
-    public RentalTab(String name, VehicleTab vehicleTab, InvoiceTab invoiceTab) {
+    public RentalTab(String name, VehicleTab vehicleTab, InvoiceTab invoiceTab, DataAccessObject<CarRental> dao, RentalService rentalService) {
         super(name);
         this.vehicleTab = vehicleTab;
         this.invoiceTab = invoiceTab;
-    }
-
-    public void setDao(DataAccessObject<CarRental> dao){
         this.dao = dao;
+        this.rs = rentalService;
     }
 
     public void initUI(){
@@ -62,7 +53,7 @@ public class RentalTab extends Tab<CarRental>{
                     stringArray,
                     null
             );
-
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             String now = LocalDateTime.now().format(dtf);
             String selectedTime = (String)JOptionPane.showInputDialog(
                     null,

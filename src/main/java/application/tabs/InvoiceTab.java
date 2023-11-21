@@ -21,12 +21,16 @@ public class InvoiceTab {
     private JTextArea invoice = new JTextArea();
 
     public InvoiceTab(){
+        initUI();
+    }
+
+    private void initUI(){
         background = new JPanel();
         details = new JPanel();
         price = new JPanel();
         buttons = new JPanel();
 
-        background.setLayout(new GridLayout());
+        background.setLayout(new BoxLayout(background, BoxLayout.Y_AXIS));
         details.setLayout(new GridBagLayout());
         price.setLayout(new GridBagLayout());
         buttons.setLayout(new FlowLayout());
@@ -77,7 +81,7 @@ public class InvoiceTab {
                 fw.write("\n");
                 fw.write("\nbasic payment: " + carRental.getInvoice().getBasicPayment().toString());
                 fw.write("\ntax: " + carRental.getInvoice().getTax().toString());
-                fw.write("\ntotal: " + carRental.getInvoice().totalPayment().toString());
+                fw.write("\nTOTAL: " + carRental.getInvoice().totalPayment().toString());
                 fw.close();
 
                 System.out.println("file exported");
@@ -93,6 +97,7 @@ public class InvoiceTab {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String time = carRental.getStart().format(dtf) + " - "  + carRental.getFinish().format(dtf);
+
         //details
         String det = "Plate:\n" + carRental.getVehicle().getModel() + "\n Time:\n" + time;
         plate.setEditable(false);

@@ -4,8 +4,9 @@ import application.tabs.InvoiceTab;
 import application.tabs.RentalTab;
 import application.tabs.VehicleTab;
 import model.dao.DaoFactory;
-import model.dao.DataAccessObject;
-import model.entities.Vehicle;
+import model.services.BrazilTaxService;
+import model.services.RentalService;
+import model.services.TaxService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,16 +15,17 @@ public class Main {
 
     public static void main(String[] args){
 
-        JFrame window = new JFrame("Car Rental");
-
-        InvoiceTab invoiceTab = new InvoiceTab();
-        VehicleTab vehicleTab = new VehicleTab("Vehicles");
-        RentalTab carRentalTab = new RentalTab("Rentals", vehicleTab, invoiceTab);
+        TaxService ts = new BrazilTaxService();
+        RentalService rs = new RentalService(5., 80., ts);
 
         DaoFactory.setVehiclePath("garage.csv");
         DaoFactory.setCarRentalPath("rentals.csv");
-        vehicleTab.setDao(DaoFactory.createVehicleDao());
-        carRentalTab.setDao(DaoFactory.createCarRentalDao());
+
+        InvoiceTab invoiceTab = new InvoiceTab();
+        VehicleTab vehicleTab = new VehicleTab("Vehicles", DaoFactory.createVehicleDao());
+        RentalTab carRentalTab = new RentalTab("Rentals", vehicleTab, invoiceTab, DaoFactory.createCarRentalDao(), rs);
+
+        JFrame window = new JFrame("Car Rental");
 
         JPanel upperBar = new JPanel();
         JPanel lowerBar = new JPanel();
@@ -42,8 +44,8 @@ public class Main {
         lowerBar.setLayout(new FlowLayout());
         window.add(lowerBar, BorderLayout.PAGE_END);
 
-        upperBar.add(vehicleTab.getBackgroundPanel());
-        upperBar.add(carRentalTab.getBackgroundPanel());
+        upperBar.add(vehicleTab.getBackgroundPanel(), Component.RIGHT_ALIGNMENT);
+        upperBar.add(carRentalTab.getBackgroundPanel(), Component.LEFT_ALIGNMENT);
 
         lowerBar.add(invoiceTab.getBackground());
         invoiceTab.getBackground().setPreferredSize(upperBar.getPreferredSize());

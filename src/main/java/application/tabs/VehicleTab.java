@@ -1,25 +1,16 @@
 package application.tabs;
 
-import model.dao.DaoFactory;
 import model.dao.DataAccessObject;
 import model.entities.Vehicle;
 
 import javax.swing.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VehicleTab extends Tab<Vehicle> {
 
-    private String path;
-
     private DataAccessObject<Vehicle> dao;
 
-    public VehicleTab(String name) {
+    public VehicleTab(String name, DataAccessObject<Vehicle> dao) {
         super(name);
-    }
-
-    public void setDao(DataAccessObject<Vehicle> dao){
         this.dao = dao;
     }
 
