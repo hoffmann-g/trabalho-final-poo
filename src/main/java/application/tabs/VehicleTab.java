@@ -78,6 +78,7 @@ public class VehicleTab extends Tab<Vehicle> {
     public void insertRow(Vehicle vehicle) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter("garage.csv", true));
         bw.write(vehicle.getModel().toUpperCase().replaceAll(" ", "-"));
+        bw.newLine();
         bw.flush();
         bw.close();
     }

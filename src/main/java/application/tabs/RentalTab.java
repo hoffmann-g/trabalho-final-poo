@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RentalTab extends Tab<CarRental>{
 
@@ -96,6 +97,11 @@ public class RentalTab extends Tab<CarRental>{
         deleteRental.addActionListener(e -> {
             if (getSelectedValue() != null){
                 removeFromList(getSelectedValue());
+                try {
+                    deleteRow(getSelectedValue());
+                } catch (IOException ex) {
+                    throw new RuntimeException("could not delete rental");
+                }
             }
         });
         addButton(deleteRental);
@@ -110,6 +116,11 @@ public class RentalTab extends Tab<CarRental>{
 
                 invoiceTab.loadInvoice(rental);
                 removeFromList(rental);
+                try {
+                    deleteRow(rental);
+                } catch (IOException ex) {
+                    throw new RuntimeException("could not delete rental");
+                }
 
             }
         });
@@ -140,12 +151,36 @@ public class RentalTab extends Tab<CarRental>{
     void insertRow(CarRental carRental) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter("rentals.csv", true));
         bw.write(carRental.getVehicle().getModel() + "," + carRental.getStart());
+        bw.newLine();
         bw.flush();
         bw.close();
     }
 
     @Override
     void deleteRow(CarRental carRental) throws IOException {
+
+        System.out.println(carRental.getVehicle().getModel());
+        System.out.println(carRental.getStart());
+
+        BufferedReader br = new BufferedReader(new FileReader("rentals.csv"));
+        List<String[]> rows = new ArrayList<>();
+        String rental;
+        while((rental = br.readLine()) != null){
+            String[] row = rental.split(",");
+            System.out.println("read: " + row[0] + " - " + row[1]);
+            if(!Objects.equals(row[0], carRental.getVehicle().getModel()) && !Objects.equals(row[1], carRental.getStart().toString())){
+                rows.add(row);
+            }
+        }
+        br.close();
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("rentals.csv", false));
+        for(String[] s : rows){
+            bw.write(s[0] + "," + s[1]);
+            bw.newLine();
+        }
+        bw.flush();
+        bw.close();
 
     }
 }

@@ -1,7 +1,0 @@
-PLATE: ABC-123
-start: 20/11/2023 12:37
-finish: 20/11/2023 12:37
-
-basic payment: 0.0
-tax: 0.0
-total: 0.0
