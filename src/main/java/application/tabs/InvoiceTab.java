@@ -17,8 +17,7 @@ public class InvoiceTab {
     private JPanel price;
     private JPanel buttons;
 
-    private JTextArea plate = new JTextArea();
-    private JTextArea invoice = new JTextArea();
+    private JLabel plate = new JLabel();
 
     public InvoiceTab(){
         initUI();
@@ -29,6 +28,8 @@ public class InvoiceTab {
         details = new JPanel();
         price = new JPanel();
         buttons = new JPanel();
+
+        plate.setBackground(Color.ORANGE);
 
         background.setLayout(new BoxLayout(background, BoxLayout.Y_AXIS));
         details.setLayout(new GridBagLayout());
@@ -46,15 +47,7 @@ public class InvoiceTab {
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.gridx = 0;
-        gbc2.gridy = 0;
-        gbc2.weightx = 1.0;
-        gbc2.weighty = 1.0;
-        gbc2.anchor = GridBagConstraints.CENTER;
-
         details.add(plate, gbc);
-        price.add(invoice, gbc2);
 
         JButton generateCode = new JButton("Generate Code");
         generateCode.addActionListener(e -> {
@@ -99,16 +92,17 @@ public class InvoiceTab {
         String time = carRental.getStart().format(dtf) + " - "  + carRental.getFinish().format(dtf);
 
         //details
-        String det = "Plate:\n" + carRental.getVehicle().getModel() + "\n Time:\n" + time;
-        plate.setEditable(false);
-        plate.setText(det);
+        String det = "<html>Plate:<BR>" + carRental.getVehicle().getModel() + "<BR> Time:<BR>" + time + "<BR><BR><html>";
 
         //price and whatever
-        String inv = "Value: -----\n" + carRental.getInvoice().getBasicPayment() +
-                "\n Tax: -----\n"+ carRental.getInvoice().getTax() +
-                "\n TOTAL: -----\n" + carRental.getInvoice().totalPayment();
-        invoice.setEditable(false);
-        invoice.setText(inv);
+        String inv = "<html>Value: <BR>" + carRental.getInvoice().getBasicPayment() +
+                "<BR> Tax: <BR>"+ carRental.getInvoice().getTax() +
+                "<BR> TOTAL: <BR>" + carRental.getInvoice().totalPayment() +
+                "<html>";
+
+        String result = det.concat(inv);
+
+        plate.setText(result);
     }
 
     public JPanel getBackground() {

@@ -79,4 +79,9 @@ public class CarRentalDaoCSV implements DataAccessObject<CarRental> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public boolean contains(CarRental carRental) {
+        return readRows().contains(carRental);
+    }
 }

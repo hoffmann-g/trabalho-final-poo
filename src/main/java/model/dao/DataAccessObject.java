@@ -7,4 +7,5 @@ public interface DataAccessObject<T> {
     List<T> readRows();
     void insertRow(T t);
     void deleteRow(T t);
+    boolean contains(T t);
 }

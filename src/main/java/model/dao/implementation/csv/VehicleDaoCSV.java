@@ -58,6 +58,11 @@ public class VehicleDaoCSV implements DataAccessObject<Vehicle> {
     }
 
     @Override
+    public boolean contains(Vehicle vehicle) {
+        return (readRows().contains(vehicle));
+    }
+
+    @Override
     public void insertRow(Vehicle vehicle) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));

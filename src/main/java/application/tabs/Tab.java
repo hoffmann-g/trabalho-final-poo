@@ -1,22 +1,20 @@
 package application.tabs;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.security.InvalidParameterException;
+import java.util.HashSet;
 
 public abstract class Tab<T> {
 
     private JPanel backgroundPanel;
-    private JPanel labelPanel;
-    private JScrollPane scrollPane;
     private JPanel buttonPanel;
-    private JPanel listPanel;
     private T selectedObj;
 
-    private JList<T> jList = new JList<>();
+    private final JList<T> jList = new JList<>();
     private DefaultListModel<T> listModel;
-    private List<T> objList = new ArrayList<>();
+    private final HashSet<T> objSet = new HashSet<>();
 
     public Tab(String name) {
         // Initialize the components
@@ -32,16 +30,16 @@ public abstract class Tab<T> {
         jList.setMinimumSize(fixedSize);
 
         // label panel
-        labelPanel = new JPanel();
+        JPanel labelPanel = new JPanel();
         JLabel title = new JLabel(name);
         labelPanel.add(title);
         backgroundPanel.add(labelPanel);
 
         // list
-        listPanel = new JPanel();
+        JPanel listPanel = new JPanel();
         listModel = new DefaultListModel<>();
         jList.setModel(listModel); // Set the model for the JList
-        scrollPane = new JScrollPane(jList);
+        JScrollPane scrollPane = new JScrollPane(jList);
 
         listPanel.add(scrollPane, BorderLayout.CENTER);
         backgroundPanel.add(listPanel);
@@ -64,21 +62,21 @@ public abstract class Tab<T> {
     }
 
     public void insertIntoList(T t){
-        listModel.addElement(t);
-        objList.add(t);
+        if (!objSet.contains(t)) {
+            listModel.addElement(t);
+            objSet.add(t);
+        } else {
+            throw new InvalidParameterException();
+        }
     }
 
     public void removeFromList(T t){
         listModel.removeElement(t);
-        objList.remove(t);
+        objSet.remove(t);
     }
 
     public JPanel getBackgroundPanel() {
         return backgroundPanel;
-    }
-
-    public List<T> getObjList() {
-        return objList;
     }
 
     public T getSelectedValue(){
