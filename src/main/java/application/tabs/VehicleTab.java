@@ -9,13 +9,17 @@ import java.util.List;
 
 public class VehicleTab extends Tab<Vehicle> {
 
+    private String path;
+
     public VehicleTab(String name) {
         super(name);
+    }
 
+    public void initUI(){
         try {
             readRows();
         } catch (IOException e) {
-            throw new RuntimeException("could not load vehicles from garage");
+            throw new RuntimeException("could not load vehicles from path");
         }
 
         JButton createVehicle = new JButton("+");
@@ -45,7 +49,7 @@ public class VehicleTab extends Tab<Vehicle> {
     }
 
     public void readRows() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("garage.csv"));
+        BufferedReader br = new BufferedReader(new FileReader(path));
         String plate;
         while((plate = br.readLine()) != null){
             insertIntoList(new Vehicle(plate.replaceAll(",", "")));
@@ -55,7 +59,7 @@ public class VehicleTab extends Tab<Vehicle> {
     }
 
     public void deleteRow(Vehicle vehicle) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("garage.csv"));
+        BufferedReader br = new BufferedReader(new FileReader(path));
         List<String> vehicleList = new ArrayList<>();
         String plate;
         while((plate = br.readLine()) != null){
@@ -66,7 +70,7 @@ public class VehicleTab extends Tab<Vehicle> {
         }
         br.close();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter("garage.csv", false));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
         for(String v : vehicleList){
             bw.write(v);
             bw.newLine();
@@ -75,8 +79,13 @@ public class VehicleTab extends Tab<Vehicle> {
         bw.close();
     }
 
+    @Override
+    public void loadPath(String string) {
+        path = string;
+    }
+
     public void insertRow(Vehicle vehicle) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter("garage.csv", true));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
         bw.write(vehicle.getModel().toUpperCase().replaceAll(" ", "-"));
         bw.newLine();
         bw.flush();

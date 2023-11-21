@@ -6,8 +6,6 @@ import model.services.BrazilTaxService;
 import model.services.RentalService;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +15,11 @@ import java.util.Objects;
 
 public class RentalTab extends Tab<CarRental>{
 
+    private VehicleTab vehicleTab;
+    private InvoiceTab invoiceTab;
+
+    private String path;
+
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     private CarRental rental = null;
@@ -25,7 +28,11 @@ public class RentalTab extends Tab<CarRental>{
 
     public RentalTab(String name, VehicleTab vehicleTab, InvoiceTab invoiceTab) {
         super(name);
+        this.vehicleTab = vehicleTab;
+        this.invoiceTab = invoiceTab;
+    }
 
+    public void initUI(){
         try {
             readRows();
         } catch (IOException e) {
@@ -60,7 +67,7 @@ public class RentalTab extends Tab<CarRental>{
                     null,
                     null,
                     now
-                    );
+            );
 
             if (selectedOption != null) {
                 CarRental cr1;
@@ -149,7 +156,7 @@ public class RentalTab extends Tab<CarRental>{
 
     @Override
     void insertRow(CarRental carRental) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter("rentals.csv", true));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
         bw.write(carRental.getVehicle().getModel() + "," + carRental.getStart());
         bw.newLine();
         bw.flush();
@@ -162,7 +169,7 @@ public class RentalTab extends Tab<CarRental>{
         System.out.println(carRental.getVehicle().getModel());
         System.out.println(carRental.getStart());
 
-        BufferedReader br = new BufferedReader(new FileReader("rentals.csv"));
+        BufferedReader br = new BufferedReader(new FileReader(path));
         List<String[]> rows = new ArrayList<>();
         String rental;
         while((rental = br.readLine()) != null){
@@ -174,7 +181,7 @@ public class RentalTab extends Tab<CarRental>{
         }
         br.close();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter("rentals.csv", false));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
         for(String[] s : rows){
             bw.write(s[0] + "," + s[1]);
             bw.newLine();
@@ -183,4 +190,10 @@ public class RentalTab extends Tab<CarRental>{
         bw.close();
 
     }
+
+    @Override
+    public void loadPath(String string) {
+        path = string;
+    }
+
 }

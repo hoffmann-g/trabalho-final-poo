@@ -9,16 +9,22 @@ import java.awt.*;
 
 public class Main {
 
-    private static JFrame window = new JFrame("Car Rental");
-
-    private static InvoiceTab invoiceTab = new InvoiceTab();
-    private static VehicleTab vehicleTab = new VehicleTab("Vehicles");
-    private static RentalTab carRentalTab = new RentalTab("Rentals", vehicleTab, invoiceTab);
-
-    private static JPanel upperBar = new JPanel();
-    private static JPanel lowerBar = new JPanel();
-
     public static void main(String[] args){
+
+        JFrame window = new JFrame("Car Rental");
+
+        InvoiceTab invoiceTab = new InvoiceTab();
+        VehicleTab vehicleTab = new VehicleTab("Vehicles");
+        RentalTab carRentalTab = new RentalTab("Rentals", vehicleTab, invoiceTab);
+
+        JPanel upperBar = new JPanel();
+        JPanel lowerBar = new JPanel();
+
+        vehicleTab.loadPath("garage.csv");
+        carRentalTab.loadPath("rentals.csv");
+
+        vehicleTab.initUI();
+        carRentalTab.initUI();
 
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);

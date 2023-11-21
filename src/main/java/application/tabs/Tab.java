@@ -92,4 +92,6 @@ public abstract class Tab<T> {
     abstract void insertRow(T t) throws Exception;
     abstract void deleteRow(T t) throws Exception;
 
+    abstract void loadPath(String string);
+
 }
