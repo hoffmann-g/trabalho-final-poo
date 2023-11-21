@@ -1,5 +1,6 @@
 package application.tabs;
 
+import model.dao.DataAccessObject;
 import model.entities.CarRental;
 import model.entities.Vehicle;
 import model.services.BrazilTaxService;
@@ -20,6 +21,8 @@ public class RentalTab extends Tab<CarRental>{
 
     private String path;
 
+    private DataAccessObject<CarRental> dao;
+
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     private CarRental rental = null;
@@ -32,11 +35,13 @@ public class RentalTab extends Tab<CarRental>{
         this.invoiceTab = invoiceTab;
     }
 
+    public void setDao(DataAccessObject<CarRental> dao){
+        this.dao = dao;
+    }
+
     public void initUI(){
-        try {
-            readRows();
-        } catch (IOException e) {
-            throw new RuntimeException("could not read rentals");
+        for(CarRental cr : dao.readRows()){
+            insertIntoList(cr);
         }
 
         JButton createRental = new JButton("+");
@@ -88,11 +93,7 @@ public class RentalTab extends Tab<CarRental>{
                     cr1 = new CarRental(LocalDateTime.parse(selectedTime), null, new Vehicle(selectedOption));
                 }
                 insertIntoList(cr1);
-                try {
-                    insertRow(cr1);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                dao.insertRow(cr1);
 
                 System.out.println("Rental created:");
                 System.out.println(cr1.getStart().toString());
@@ -104,11 +105,7 @@ public class RentalTab extends Tab<CarRental>{
         deleteRental.addActionListener(e -> {
             if (getSelectedValue() != null){
                 removeFromList(getSelectedValue());
-                try {
-                    deleteRow(getSelectedValue());
-                } catch (IOException ex) {
-                    throw new RuntimeException("could not delete rental");
-                }
+                dao.deleteRow(getSelectedValue());
             }
         });
         addButton(deleteRental);
@@ -123,77 +120,10 @@ public class RentalTab extends Tab<CarRental>{
 
                 invoiceTab.loadInvoice(rental);
                 removeFromList(rental);
-                try {
-                    deleteRow(rental);
-                } catch (IOException ex) {
-                    throw new RuntimeException("could not delete rental");
-                }
+                dao.deleteRow(rental);
 
             }
         });
         addButton(finalizeRental);
     }
-
-    @Override
-    void readRows() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("rentals.csv"));
-        String rental;
-        while((rental = br.readLine()) != null){
-            String[] info = rental.split(",");
-            String plate = info[0];
-            LocalDateTime time = LocalDateTime.parse(info[1]);
-
-            System.out.println(plate);
-            System.out.println(time);
-
-            CarRental cr = new CarRental(time, null, new Vehicle(plate));
-            insertIntoList(cr);
-
-            System.out.println("read: " + cr.getVehicle().getModel() + cr.getStart());
-        }
-        br.close();
-    }
-
-    @Override
-    void insertRow(CarRental carRental) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
-        bw.write(carRental.getVehicle().getModel() + "," + carRental.getStart());
-        bw.newLine();
-        bw.flush();
-        bw.close();
-    }
-
-    @Override
-    void deleteRow(CarRental carRental) throws IOException {
-
-        System.out.println(carRental.getVehicle().getModel());
-        System.out.println(carRental.getStart());
-
-        BufferedReader br = new BufferedReader(new FileReader(path));
-        List<String[]> rows = new ArrayList<>();
-        String rental;
-        while((rental = br.readLine()) != null){
-            String[] row = rental.split(",");
-            System.out.println("read: " + row[0] + " - " + row[1]);
-            if(!Objects.equals(row[0], carRental.getVehicle().getModel()) && !Objects.equals(row[1], carRental.getStart().toString())){
-                rows.add(row);
-            }
-        }
-        br.close();
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
-        for(String[] s : rows){
-            bw.write(s[0] + "," + s[1]);
-            bw.newLine();
-        }
-        bw.flush();
-        bw.close();
-
-    }
-
-    @Override
-    public void loadPath(String string) {
-        path = string;
-    }
-
 }

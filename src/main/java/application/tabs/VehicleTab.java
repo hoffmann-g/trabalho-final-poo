@@ -1,5 +1,7 @@
 package application.tabs;
 
+import model.dao.DaoFactory;
+import model.dao.DataAccessObject;
 import model.entities.Vehicle;
 
 import javax.swing.*;
@@ -11,26 +13,26 @@ public class VehicleTab extends Tab<Vehicle> {
 
     private String path;
 
+    private DataAccessObject<Vehicle> dao;
+
     public VehicleTab(String name) {
         super(name);
     }
 
+    public void setDao(DataAccessObject<Vehicle> dao){
+        this.dao = dao;
+    }
+
     public void initUI(){
-        try {
-            readRows();
-        } catch (IOException e) {
-            throw new RuntimeException("could not load vehicles from path");
+        for(Vehicle v : dao.readRows()){
+            insertIntoList(v);
         }
 
         JButton createVehicle = new JButton("+");
         createVehicle.addActionListener(e -> {
             String plate = JOptionPane.showInputDialog("License plate:").toUpperCase().replaceAll(" ", "-");
             insertIntoList(new Vehicle(plate));
-            try {
-                insertRow(new Vehicle(plate));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            dao.insertRow(new Vehicle(plate));
         });
         addButton(createVehicle);
 
@@ -38,57 +40,9 @@ public class VehicleTab extends Tab<Vehicle> {
         deleteVehicle.addActionListener(e -> {
             if (getSelectedValue() != null){
                 removeFromList(getSelectedValue());
-                try {
-                    deleteRow(getSelectedValue());
-                } catch (IOException ex) {
-                    throw new RuntimeException("could not delete row in csv");
-                }
+                dao.deleteRow(getSelectedValue());
             }
         });
         addButton(deleteVehicle);
-    }
-
-    public void readRows() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(path));
-        String plate;
-        while((plate = br.readLine()) != null){
-            insertIntoList(new Vehicle(plate.replaceAll(",", "")));
-            System.out.println("read: " + plate);
-        }
-        br.close();
-    }
-
-    public void deleteRow(Vehicle vehicle) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(path));
-        List<String> vehicleList = new ArrayList<>();
-        String plate;
-        while((plate = br.readLine()) != null){
-            if (!plate.equals(vehicle.getModel().toUpperCase().replaceAll(" ", "-"))){
-                vehicleList.add(plate);
-            }
-            System.out.println("read: " + plate);
-        }
-        br.close();
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
-        for(String v : vehicleList){
-            bw.write(v);
-            bw.newLine();
-        }
-        bw.flush();
-        bw.close();
-    }
-
-    @Override
-    public void loadPath(String string) {
-        path = string;
-    }
-
-    public void insertRow(Vehicle vehicle) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
-        bw.write(vehicle.getModel().toUpperCase().replaceAll(" ", "-"));
-        bw.newLine();
-        bw.flush();
-        bw.close();
     }
 }

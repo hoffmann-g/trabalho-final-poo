@@ -3,6 +3,9 @@ package application;
 import application.tabs.InvoiceTab;
 import application.tabs.RentalTab;
 import application.tabs.VehicleTab;
+import model.dao.DaoFactory;
+import model.dao.DataAccessObject;
+import model.entities.Vehicle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +20,13 @@ public class Main {
         VehicleTab vehicleTab = new VehicleTab("Vehicles");
         RentalTab carRentalTab = new RentalTab("Rentals", vehicleTab, invoiceTab);
 
+        DaoFactory.setVehiclePath("garage.csv");
+        DaoFactory.setCarRentalPath("rentals.csv");
+        vehicleTab.setDao(DaoFactory.createVehicleDao());
+        carRentalTab.setDao(DaoFactory.createCarRentalDao());
+
         JPanel upperBar = new JPanel();
         JPanel lowerBar = new JPanel();
-
-        vehicleTab.loadPath("garage.csv");
-        carRentalTab.loadPath("rentals.csv");
 
         vehicleTab.initUI();
         carRentalTab.initUI();

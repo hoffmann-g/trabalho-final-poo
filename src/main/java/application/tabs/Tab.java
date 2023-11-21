@@ -1,7 +1,5 @@
 package application.tabs;
 
-import model.entities.CarRental;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -87,11 +85,4 @@ public abstract class Tab<T> {
         System.out.println("returned:" + selectedObj);
         return selectedObj;
     }
-
-    abstract void readRows() throws Exception;
-    abstract void insertRow(T t) throws Exception;
-    abstract void deleteRow(T t) throws Exception;
-
-    abstract void loadPath(String string);
-
 }
