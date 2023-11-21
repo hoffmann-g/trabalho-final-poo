@@ -62,7 +62,7 @@ public class RentalTab extends Tab<CarRental>{
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     null,
-                    LocalDateTime.now()
+                    now
             );
 
             if (selectedVehicle != null) {
