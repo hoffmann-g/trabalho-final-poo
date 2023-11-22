@@ -34,8 +34,11 @@ public abstract class Tab<T> {
 
         // list
         JPanel listPanel = new JPanel();
+
         listModel = new DefaultListModel<>();
+
         jList.setModel(listModel); // Set the model for the JList
+
         JScrollPane scrollPane = new JScrollPane(jList);
 
         listPanel.add(scrollPane, BorderLayout.CENTER);
@@ -58,7 +61,7 @@ public abstract class Tab<T> {
         listPanel.setBackground(Color.gray);
         buttonPanel.setBackground(Color.white);
 
-        jList.setPreferredSize(backgroundPanel.getPreferredSize());
+        scrollPane.setPreferredSize(backgroundPanel.getPreferredSize());
     }
 
     public void addButton(JButton button){
@@ -70,6 +73,8 @@ public abstract class Tab<T> {
         if (!objSet.contains(t)) {
             listModel.addElement(t);
             objSet.add(t);
+            jList.revalidate();
+            jList.repaint();
         } else {
             throw new InvalidParameterException();
         }
