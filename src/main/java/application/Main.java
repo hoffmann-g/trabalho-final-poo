@@ -25,6 +25,8 @@ public class Main {
                 ("Running Rentals", invoiceTab, DaoFactory.createCarRentalDao(),
                         DaoFactory.createVehicleDao(), rs);
 
+        invoiceTab.setOutputQRCodePath(".QRCode.png");
+
         JFrame window = new JFrame("Parking System Manager");
 
         JPanel upperBar = new JPanel();

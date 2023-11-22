@@ -1,13 +1,16 @@
 package application.tabs;
 
+import application.utility.QRCodeManager;
 import model.entities.CarRental;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.Flow;
 
 public class InvoiceTab {
 
@@ -15,7 +18,9 @@ public class InvoiceTab {
 
     private JPanel background;
 
-    private JTextPane plate = new JTextPane();
+    private final JTextPane plate = new JTextPane();
+
+    private String outputQRCodePath;
 
     public InvoiceTab(){
         initUI();
@@ -53,15 +58,22 @@ public class InvoiceTab {
         title.setFont(new Font("Tahoma", Font.PLAIN, 16));
         plate.setFont(new Font("Serif", Font.PLAIN, 16));
         //
+
         JButton generateCode = new JButton("Generate Code");
         generateCode.addActionListener(e -> {
-            JFrame frame = new JFrame("test");
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            JLabel jLabel = new JLabel(String.valueOf(carRental.getInvoice().totalPayment()));
-            frame.add(jLabel);
+            try {
+                String message = "https://payment-link/(value: " + carRental.getInvoice().totalPayment().toString() + ")";
 
-            frame.pack();
-            frame.setVisible(true);
+                QRCodeManager.createQRImage(new File(outputQRCodePath),
+                        message, 250, "png");
+
+                System.out.println("QR Code created");
+
+                showQRCode(outputQRCodePath);
+            } catch (Exception ex) {
+                throw new RuntimeException("could not create QR code");
+            }
+
         });
         buttons.add(generateCode);
 
@@ -96,7 +108,6 @@ public class InvoiceTab {
         this.carRental = carRental;
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String time = carRental.getStart().format(dtf) + "\n    "  + carRental.getFinish().format(dtf);
 
         //details
         String invoice = "PLATE: " + carRental.getVehicle().getModel() +
@@ -111,7 +122,33 @@ public class InvoiceTab {
 
     }
 
+    private void showQRCode(String path) throws IOException {
+        JDialog paymentDialog = new JDialog();
+        paymentDialog.setTitle("QR Code");
+
+        JPanel panel = new JPanel(new BorderLayout());
+
+        ImageIcon icon = new ImageIcon(path);
+        JLabel imageLabel = new JLabel(icon);
+
+        panel.add(imageLabel, BorderLayout.CENTER);
+
+        paymentDialog.add(panel);
+
+        paymentDialog.setSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+        paymentDialog.setLocationRelativeTo(background);
+        paymentDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        paymentDialog.setVisible(true);
+
+        Files.delete(Path.of(path));
+    }
+
     public JPanel getBackground() {
         return background;
+    }
+
+    public void setOutputQRCodePath(String outputQRCodePath) {
+        this.outputQRCodePath = outputQRCodePath;
     }
 }
