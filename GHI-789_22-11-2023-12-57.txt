@@ -1,0 +1,7 @@
+PLATE: GHI-789
+start: 22/11/2023 12:56
+finish: 22/11/2023 12:57
+
+basic payment: 0.0
+tax: 0.0
+TOTAL: 0.0

@@ -7,48 +7,52 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Flow;
 
 public class InvoiceTab {
 
     private CarRental carRental;
 
     private JPanel background;
-    private JPanel details;
-    private JPanel price;
-    private JPanel buttons;
 
-    private JLabel plate = new JLabel();
+    private JTextPane plate = new JTextPane();
 
     public InvoiceTab(){
         initUI();
     }
 
     private void initUI(){
+        // instantiate
         background = new JPanel();
-        details = new JPanel();
-        price = new JPanel();
-        buttons = new JPanel();
+        JPanel details = new JPanel();
+        JPanel buttons = new JPanel();
+        JPanel labelPanel = new JPanel();
+        JLabel title = new JLabel("Invoice");
 
-        plate.setBackground(Color.ORANGE);
-
-        background.setLayout(new BoxLayout(background, BoxLayout.Y_AXIS));
+        // define layouts
+        background.setLayout(new BorderLayout());
         details.setLayout(new GridBagLayout());
-        price.setLayout(new GridBagLayout());
         buttons.setLayout(new FlowLayout());
 
-        background.add(details);
-        background.add(price);
-        background.add(buttons);
+        // adds
+        labelPanel.add(title);
+        details.add(plate);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.CENTER;
+        // add to bg
+        background.add(labelPanel, BorderLayout.PAGE_START);
+        background.add(details, BorderLayout.CENTER);
+        background.add(buttons, BorderLayout.PAGE_END);
 
-        details.add(plate, gbc);
+        // color
+        background.setBackground(Color.DARK_GRAY);
+        buttons.setBackground(Color.white);
+        details.setBackground(Color.GRAY);
+        plate.setBackground(Color.gray);
 
+        // font
+        title.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        plate.setFont(new Font("Serif", Font.PLAIN, 16));
+        //
         JButton generateCode = new JButton("Generate Code");
         generateCode.addActionListener(e -> {
             JFrame frame = new JFrame("test");
@@ -83,26 +87,28 @@ public class InvoiceTab {
             }
         });
         buttons.add(generateFile);
+
+        generateFile.setBackground(Color.white);
+        generateCode.setBackground(Color.white);
     }
 
     public void loadInvoice(CarRental carRental){
         this.carRental = carRental;
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String time = carRental.getStart().format(dtf) + " - "  + carRental.getFinish().format(dtf);
+        String time = carRental.getStart().format(dtf) + "\n    "  + carRental.getFinish().format(dtf);
 
         //details
-        String det = "<html>Plate:<BR>" + carRental.getVehicle().getModel() + "<BR> Time:<BR>" + time + "<BR><BR><html>";
+        String invoice = "PLATE: " + carRental.getVehicle().getModel() +
+                            "\nstart: " + carRental.getStart().format(dtf) +
+                            "\nfinish: " + carRental.getFinish().format(dtf) +
+                            "\n" +
+                            "\nbasic payment: R$" + carRental.getInvoice().getBasicPayment() +
+                            "\ntax: R$" + carRental.getInvoice().getTax() +
+                            "\nTOTAL: R$" + carRental.getInvoice().totalPayment();
+        plate.setBackground(Color.white);
+        plate.setText(invoice);
 
-        //price and whatever
-        String inv = "<html>Value: <BR>" + carRental.getInvoice().getBasicPayment() +
-                "<BR> Tax: <BR>"+ carRental.getInvoice().getTax() +
-                "<BR> TOTAL: <BR>" + carRental.getInvoice().totalPayment() +
-                "<html>";
-
-        String result = det.concat(inv);
-
-        plate.setText(result);
     }
 
     public JPanel getBackground() {

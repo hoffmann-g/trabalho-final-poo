@@ -24,16 +24,13 @@ public abstract class Tab<T> {
     private void initUI(String name) {
         // background
         backgroundPanel = new JPanel();
-        backgroundPanel.setLayout(new BoxLayout(backgroundPanel, BoxLayout.Y_AXIS));
-
-        Dimension fixedSize = new Dimension(200, 150); // Adjust the size as needed
-        jList.setMinimumSize(fixedSize);
+        backgroundPanel.setLayout(new BorderLayout());
 
         // label panel
         JPanel labelPanel = new JPanel();
         JLabel title = new JLabel(name);
         labelPanel.add(title);
-        backgroundPanel.add(labelPanel);
+        backgroundPanel.add(labelPanel, BorderLayout.PAGE_START);
 
         // list
         JPanel listPanel = new JPanel();
@@ -42,7 +39,7 @@ public abstract class Tab<T> {
         JScrollPane scrollPane = new JScrollPane(jList);
 
         listPanel.add(scrollPane, BorderLayout.CENTER);
-        backgroundPanel.add(listPanel);
+        backgroundPanel.add(listPanel, BorderLayout.CENTER);
 
         jList.addListSelectionListener(e -> {
             if (!jList.isSelectionEmpty()) {
@@ -54,10 +51,18 @@ public abstract class Tab<T> {
         // buttonPanel
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        backgroundPanel.add(buttonPanel);
+        backgroundPanel.add(buttonPanel, BorderLayout.PAGE_END);
+
+        title.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+        listPanel.setBackground(Color.gray);
+        buttonPanel.setBackground(Color.white);
+
+        jList.setPreferredSize(backgroundPanel.getPreferredSize());
     }
 
     public void addButton(JButton button){
+        button.setBackground(Color.white);
         buttonPanel.add(button);
     }
 

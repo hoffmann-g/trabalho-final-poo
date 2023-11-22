@@ -21,7 +21,9 @@ public class Main {
 
         InvoiceTab invoiceTab = new InvoiceTab();
         VehicleTab vehicleTab = new VehicleTab("Vehicles", DaoFactory.createVehicleDao());
-        RentalTab carRentalTab = new RentalTab("Running Rentals", invoiceTab, DaoFactory.createCarRentalDao(), DaoFactory.createVehicleDao(), rs);
+        RentalTab carRentalTab = new RentalTab
+                ("Running Rentals", invoiceTab, DaoFactory.createCarRentalDao(),
+                        DaoFactory.createVehicleDao(), rs);
 
         JFrame window = new JFrame("Parking System Manager");
 
@@ -31,19 +33,22 @@ public class Main {
         vehicleTab.initUI();
         carRentalTab.initUI();
 
+        upperBar.setBackground(Color.DARK_GRAY);
+        lowerBar.setBackground(Color.DARK_GRAY);
+
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setLayout(new BorderLayout());
 
-        upperBar.setLayout(new FlowLayout());
+        upperBar.setLayout(new GridLayout(1,2));
         window.add(upperBar, BorderLayout.PAGE_START);
 
-        lowerBar.setLayout(new FlowLayout());
+        lowerBar.setLayout(new BorderLayout());
         window.add(lowerBar, BorderLayout.CENTER);
 
-        upperBar.add(vehicleTab.getBackgroundPanel(), Component.RIGHT_ALIGNMENT);
-        upperBar.add(carRentalTab.getBackgroundPanel(), Component.LEFT_ALIGNMENT);
+        upperBar.add(vehicleTab.getBackgroundPanel());
+        upperBar.add(carRentalTab.getBackgroundPanel());
 
         lowerBar.add(invoiceTab.getBackground());
         invoiceTab.getBackground().setPreferredSize(upperBar.getPreferredSize());

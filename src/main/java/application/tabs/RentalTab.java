@@ -42,6 +42,9 @@ public class RentalTab extends Tab<CarRental>{
 
             carRentalList.forEach(x -> vehicles.remove(x.getVehicle()));
 
+            System.out.println("available vehicles");
+            System.out.println(vehicles);
+
             Vehicle selectedVehicle = (Vehicle) JOptionPane.showInputDialog(
                     null,
                     null,
