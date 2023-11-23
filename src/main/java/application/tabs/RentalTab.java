@@ -69,22 +69,17 @@ public class RentalTab extends Tab<CarRental>{
             );
 
             if (selectedVehicle != null) {
-                CarRental cr1;
-                if (selectedTime.length() < 1){
-                    cr1 = new CarRental(LocalDateTime.now(), null, selectedVehicle);
-                }
-                else {
-                    selectedTime = selectedTime.replaceAll("/", "-");
-                    selectedTime = selectedTime.replaceAll(" ", "T");
+                selectedTime = selectedTime.replaceAll("/", "-");
+                selectedTime = selectedTime.replaceAll(" ", "T");
 
-                    cr1 = new CarRental(LocalDateTime.parse(selectedTime), null, selectedVehicle);
-                }
+                CarRental cr1 = new CarRental(LocalDateTime.parse(selectedTime), null, selectedVehicle);
+
                 try {
                     insertIntoList(cr1);
                     carRentalDao.insertRow(cr1);
                 } catch (InvalidParameterException ex){
                     System.out.println("rental already exists");
-                    JOptionPane.showMessageDialog(getBackgroundPanel(), "A rental with the same vehicle and start time already exists!",
+                    JOptionPane.showMessageDialog(getBackgroundPanel(), "Rental already exists!",
                             "Error", JOptionPane.WARNING_MESSAGE);
                 }
             }

@@ -14,7 +14,7 @@ public class VehicleTab extends Tab<Vehicle> {
         super(name);
         this.dao = dao;
     }
-    @SuppressWarnings("")
+
     public void initUI(){
         for(Vehicle v : dao.readRows()){
             insertIntoList(v);
